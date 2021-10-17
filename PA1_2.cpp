@@ -7,13 +7,15 @@ private:
     int* Code;
     int* F; 
     int top;
+    int cap;
 public:
     Bitmap(int n)
     {
-        this->T=new int(n);
-        this->F=new int(n);
-        this->Code=new int(n);
-        this->top=0;
+        T=new int[n];
+        F=new int[n];
+        Code=new int[n];
+        this->top = 0;
+        cap = n;
     }
     ~Bitmap()
     {
@@ -30,7 +32,7 @@ public:
     }
     int test(int k)
     {
-        if((0 < this->F[k]) && (this->F[k] < this->top) && (k == this->T[this->F[k]]))
+        if((0 <= F[k]) && (F[k] < top) && (k == T[F[k]]))
         {
             return F[k];
         }
@@ -59,12 +61,7 @@ public:
     }
     void clear(int k)
     {
-        if(this->top<=1)
-        {
-            this->top = 0;
-            return;
-        }
-        if((test(k) != -1) && (--this->top))
+        if((test(k) != -1) && (--top))
         {
             this->F[this->T[this->top]] = this->F[k];
             this->T[this->F[k]] = this->T[this->top];
@@ -73,13 +70,16 @@ public:
     }
     int GetCode(int k)
     {
-        if(test(k)!=-1)
-            return this->Code[test(k)];
-        else
+        if(test(k)==-1)
+        {
             return -1;
+        }
+        else 
+        {
+            return Code[test(k)];
+        }
     }
 };
-
 int main()
 {
     int n=0;
@@ -87,7 +87,7 @@ int main()
     scanf("%d %d",&n,&m);
     getchar();
     long int Sum=0;
-    Bitmap B(n);
+    Bitmap B(n+1);
     char Op;
     int a=0;
     int c=0;
@@ -99,23 +99,23 @@ int main()
         case 'I':
             scanf("%d %d",&a,&c);
             getchar();
-            B.set(a,c);
+            B.set(a-1,c);
             break;
         case 'O':
             scanf("%d",&a);
             getchar();
-            B.clear(a);
+            B.clear(a-1);
             break;
         case 'C':
             B.reset();
             break;
         case 'N':
-            Sum += B.Size();
+            Sum += (long)B.Size();
             break;
         case 'Q':
             scanf("%d",&a);
             getchar();
-            Sum+=B.GetCode(a);
+            Sum+=(long)B.GetCode(a-1);
             break;
         }
     }
